@@ -1,23 +1,20 @@
 {% extends '_layout.html' %}
 {% block content %}
 
-<h1>Sign Up</h1>
+<h1>Sign In</h1>
 
-<form class="form-group" action="{{ url_for('users.create') }}" method="post" novalidate>
+<form class="form-group" action="{{ url_for('sessions.create') }}" method="post" novalidate>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div>
-        <label for="name">Name:</label>
-        <input class="form-control" type="text" name="name" placeholder="Your Nickname">
+        
+        
         <label for="username">Username:</label>
         <input class="form-control" type="text" name="username" placeholder="Enter your username">
-        <label for="email">Email:</label>
-        <input class="form-control" type="email" name="email" placeholder="Enter your email">
 
         <label for="password">Password:</label>
         <input class="form-control" type="password" name="password" placeholder="Your Password">
 
-        <label for="repeatpassword">Repeat Password:</label>
-        <input class="form-control" type="password" name="repeatpassword" placeholder="Repeat Password">
+        
     </div>
     <button class="btn btn-primary" type="submit" value="Add" name="">Submit</button>
 </form>

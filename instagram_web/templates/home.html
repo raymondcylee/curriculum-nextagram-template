@@ -1,9 +1,29 @@
 {% extends "_layout.html" %}
 {% block title %}
-  Homepage
+Homepage
 {% endblock %}
 {% block header %}
 {% endblock %}
 {% block content %}
 <h1>Homepage</h1>
+{% if current_user.is_authenticated %}
+<h2>Welcome back! {{ current_user.name }}</h2>
+<form action="{{ url_for('users.destroy') }}" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+  <button class="btn btn-danger">Sign Out</button>
+</form>
+<form action="{{ url_for('users.show', username=current_user.username) }}">
+  <button class="btn btn-primary">My profile</button>
+</form>
+{% else %}
+<div class="d-flex justify-content-left">
+  <form action="{{ url_for('sessions.new') }}">
+    <button class="btn btn-primary ml-2">Sign In</button>
+  </form>
+  <form action="{{ url_for('users.new') }}">
+    <button class="btn btn-primary ml-2">Sign Up</button>
+  </form>
+
+</div>
+{% endif %}
 {% endblock %}
