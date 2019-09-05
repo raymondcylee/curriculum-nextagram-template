@@ -137,3 +137,4 @@ def upload_image():
         flash('Please choose an image before you upload', 'danger')
         return redirect(url_for("users.show", username=current_user.username))
 
+
