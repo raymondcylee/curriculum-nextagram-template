@@ -1,0 +1,20 @@
+.donations{
+    font-family: $merienda-font;
+
+    .card-header{
+        background-color: $primary-accent-lighter;
+        color: $card-header-color;
+        font-size: 25px;
+    }
+
+    .btn{
+        background-color:$btn-color;
+        color: $primary-accent;
+        border: 1px solid $primary-accent;
+    }
+
+    .btn:hover{
+        background-color: $primary-accent-lighter;
+        color: $btn-hover-color;
+    }
+}

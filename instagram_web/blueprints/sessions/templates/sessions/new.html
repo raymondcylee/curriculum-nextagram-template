@@ -1,43 +1,41 @@
 {% extends '_layout.html' %}
 {% block content %}
 
-<h1>Sign In</h1>
+<div class="signInSignUp">
 
-<form class="form-group" action="{{ url_for('sessions.create') }}" method="post" novalidate>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <div>
-        
-        
-        <label for="username">Username:</label>
-        <input class="form-control" type="text" name="username" placeholder="Enter your username">
-
-        <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" placeholder="Your Password">
-
-        
+    <div class="card w-50 mx-auto" style="margin-top:5rem">
+        <div class="card-header">Sign In</div>
+        <div class="card-body">
+            <form class="form-group" action="{{ url_for('sessions.create') }}" method="post" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div>
+                    <label for="username">Username:</label>
+                    <input class="form-control" type="text" name="username" placeholder="Enter your username">
+                    </br>
+                    <label for="password">Password:</label>
+                    <input class="form-control" type="password" name="password" placeholder="Your Password">
+                </div>
+                </br>
+                <button class="btn" type="submit" value="Add" name="">Submit</button>
+            </form>
+            <form class="google-sign-in" action="{{ url_for('sessions.login') }}">
+                <button class="btn" type="submit">Sign In via Google</button>
+            </form>
+        </div>
     </div>
-    <button class="btn btn-primary" type="submit" value="Add" name="">Submit</button>
-</form>
+    </br>
 
-
-
-
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-success" role="alert">
-    <li>{{ message }}</li>
-    {% endfor %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-{{ category }}">
+        <div>{{ message }}</div>
+        {% endfor %}
+    </div>
 
     {% endif %}
     {% endwith %}
 
-    {% for error in errors if errors |length>0 %}
-    <div class="alert alert-danger" role="alert">
-        <li> {{ error }}</li>
-    </div>
-    {% endfor %}
 </div>
 
 {% endblock %}

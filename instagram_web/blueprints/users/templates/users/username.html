@@ -1,12 +1,116 @@
 {% extends '_layout.html' %}
 {% block content %}
+<div class="user">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert-{{ category }}">
+    <div>{{ message }}</div>
+  </div>
+  {% endfor %}
 
-<h2>Welcome back! {{ current_user.name }}</h2>
-{% if current_user.is_authenticated %}
-<form action="{{ url_for('users.destroy') }}" method="post">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-  <button class="btn btn-danger">Sign Out</button>
-</form>
-{% endif %}
+  {% endif %}
+  {% endwith %}
+
+  <div class="profile">
+    {% if current_user.is_authenticated %}
+    <div class="profile-picture">
+      <a href="/users/{{user.username}}">{{user.username}}</a>
+      <img id="profile-picture" src="{{ user.profile_image_url }}" />
+
+      {% if current_user != user %}
+      {% if current_user in user.all_fans %}
+      <form name="unfollow" action="{{ url_for('idol_fan_relationships.destroy', id=user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn unfollow-btn" id="{{ user.id }}">Unfollow</button>
+      </form>
+      {% else %}
+      <form name="follow" action="{{ url_for('idol_fan_relationships.create', id=user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn follow-btn" id="{{ user.id }}">Follow</button>
+      </form>
+      {% endif %}
+      {% endif %}
+
+    </div>
+
+    <div class="images">
+      {% for image in user.images %}
+      <div class="each-form">
+        <form class="each-item-inside-form"
+          action="{{ url_for('donations.new', username=user.username, id=image.id) }}">
+          <img class="each-image" src="{{ image.upload_image_url }}" />
+          {% if current_user != user %}
+          <button type="submit" class="btn">Donate</button>
+          {% endif %}
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if current_user.id == user.id %}
+  <div class="upload-image">
+    <div class="card w-25">
+      <div class="card-header">Upload your image</div>
+      <div class="card-body">
+        <form action="{{ url_for('users.upload_image') }}" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input type="file" name="user_file">
+          <br></br>
+          <button class="btn" type="submit">Upload</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+
+  let csrf_token = "{{ csrf_token() }}";
+
+  function ajaxSetup() {
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+      }
+    });
+  }
+
+  $('.follow-btn').on('click', function (e) {
+    e.preventDefault()
+    console.log(e.target.id)
+    ajaxSetup()
+    $.ajax({
+      url: `/idol_fan_relationships/${e.target.id}/follow`,
+      method: 'POST',
+      success: function (response) {
+        $(`#${e.target.id}`)
+          .text('Unfollow')
+
+      }
+    })
+  })
+
+  $('.unfollow-btn').on('click', function (e) {
+    e.preventDefault()
+    ajaxSetup()
+    $.ajax({
+      url: `/idol_fan_relationships/${e.target.id}/unfollow`,
+      method: 'POST',
+      success: function (response) {
+        $(`#${e.target.id}`)
+          .text('Follow')
+
+      }
+    })
+  })
+
+</script>
 
 {% endblock %}

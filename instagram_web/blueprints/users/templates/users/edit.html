@@ -2,52 +2,50 @@
 {% block content %}
 
 
-<h1>Upload Your Profile Photo</h1>
-
-<form action="{{ url_for('users.upload') }}" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <label for="user_file">Upload Your Photo</label>
-    <br></br>
-    <input type="file" name="user_file">
-    <br></br>
-    <button type="submit">Upload</button>
-    
-</form>
-
-<h1>Update your detail</h1>
-
-<form class="form-group" action="{{ url_for('users.update') }}" method="post" novalidate>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <div>
-        
-        
-        <label for="newname">Current Name: {{current_user.name}}</label>
-        <input class="form-control" type="text" name="newname" placeholder="Your new name">
-
-        <label for="new_username">Current Username: {{current_user.username}}</label>
-        <input class="form-control" type="text" name="new_username" placeholder="Your new username">
-
-        
-        
+<div class="signInSignUp">
+    <div class="card w-50 mx-auto" style="margin-top: 5rem">
+        <h3 class="card-header">Upload Your Profile Picture</h3>
+        <div class="card-body">
+            <form action="{{ url_for('users.upload_file') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="file" name="user_file">
+                <br></br>
+                <button class="btn btn-primary" type="submit">Upload</button>
+        </div>
+        </form>
     </div>
-    <button class="btn btn-primary" type="submit" value="Add" name="">Update</button>
-</form>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-success" role="alert">
-    <li>{{ message }}</li>
-    {% endfor %}
+    </br>
 
-    {% endif %}
-    {% endwith %}
-
-    {% for error in errors if errors |length>0 %}
-    <div class="alert alert-danger" role="alert">
-        <li> {{ error }}</li>
+    <div class="card w-75 mx-auto">
+        <h3 class="card-header">Update your detail</h3>
+        <div class="card-body">
+            <form class="form-group" action="{{ url_for('users.update') }}" method="post" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div>
+                    <label for="newname">Current Name: {{current_user.name}}</label>
+                    <input class="form-control" type="text" name="newname" placeholder="Your new name">
+                </div>
+                </br>
+                <div>
+                    <label for="new_username">Current Username: {{current_user.username}}</label>
+                    <input class="form-control" type="text" name="new_username" placeholder="Your new username">
+                </div>
+                </br>
+                <button class="btn btn-primary" type="submit" value="Add" name="">Update</button>
+            </form>
+        </div>
     </div>
-    {% endfor %}
 </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert-{{ category }}">
+    <div>{{ message }}</div>
+</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
 
 {% endblock %}

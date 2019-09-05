@@ -1,0 +1,17 @@
+$primary-accent: #256895;
+
+$primary-accent-light: lighten($primary-accent, 10%);
+$primary-accent-lighter: lighten($primary-accent, 15%);
+$primary-accent-lightest: lighten($primary-accent, 20%);
+$primary-accent-white: lighten($primary-accent, 60%);
+
+$lobster-font: 'Lobster Two', cursive;
+$merienda-font: 'Merienda', cursive;
+$modak-font: 'Modak', cursive;
+
+$profile-background: $primary-accent-white;
+$card-header-color: white;
+$btn-color: white ;
+$btn-hover-color: $primary-accent-lightest;
+$logo-color: white;
+$btn-hover-color: white;

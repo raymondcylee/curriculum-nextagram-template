@@ -1,24 +1,84 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://js.braintreegateway.com/web/dropin/1.20.0/js/dropin.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Lobster+Two|Merienda&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Modak&display=swap" rel="stylesheet">
 
-    {% assets "home_css" %}
-      <link rel="stylesheet" href="{{ ASSET_URL }}">
-    {% endassets %}
 
-    {% assets "home_js" %}
-      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+  <link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
 
-    {% block header %}{% endblock %}
-    <title>{% block title %}{% endblock %}NEXTAGRAM</title>
-  </head>
-  <body>
-    {% block content %}
-    {% endblock %}
-  </body>
+  {% assets "home_css" %}
+  <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+
+  {% assets "home_js" %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+  {% block header %}{% endblock %}
+  <title>{% block title %}{% endblock %}NEXTAGRAM</title>
+</head>
+
+<body>
+  <div id="navbar">
+    <nav id="nav" class="navbar navbar-expand-lg navbar-light">
+      <a href="/"><img id="nextagram-logo" src="https://image.flaticon.com/icons/png/512/87/87390.png"/></a>
+      <a id="nextagram" class="navbar-brand" href="/">Nextagram</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          {% if current_user.is_authenticated %}
+          <li class="mb-1">
+            <form action="{{ url_for('users.destroy') }}" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button class="btn">Sign Out</button>
+            </form>
+          </li>
+          <li class="mb-1">
+            <form action="{{ url_for('users.show', username=current_user.username) }}">
+              <button class="btn">My Profile</button>
+            </form>
+          </li>
+          <li class="mb-1">
+            <form action="{{ url_for('users.edit', username=current_user.username) }}">
+              <button class="btn">Edit My Profile</button>
+            </form>
+          </li>
+
+
+          {% else %}
+
+          <li class="mb-1">
+            <form action="{{ url_for('sessions.new') }}">
+              <button class="btn ml-2">Sign In</button>
+            </form>
+          </li>
+          <li class="mb-1">
+            <form action="{{ url_for('users.new') }}">
+              <button class="btn ml-2">Sign Up</button>
+            </form>
+          </li>
+          {% endif %}
+        </ul>
+        <form class="form-inline">
+          <input class="form-control mr-sm-2" type="search" placeholder="Username" aria-label="Search">
+          <button class="btn btn-outline my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
+  </div>
+
+  {% block content %}
+  {% endblock %}
+</body>
+
 </html>

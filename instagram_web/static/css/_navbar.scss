@@ -1,0 +1,37 @@
+
+#navbar{
+    margin-bottom: 1rem;
+    font-family: $merienda-font;
+
+    #nextagram-logo{
+        width: 30px;
+        height: 30px;
+        margin-right: 8px;
+        
+    }
+    #nav{
+        background-color: $primary-accent;
+    }   
+
+    #nextagram{
+        color: $logo-color;
+        font-family: $lobster-font;
+        font-size: 30px;
+    }
+
+    .btn{
+        background-color: $btn-color;
+        color: $primary-accent;
+        font-size: 15px;
+        margin-left: 0.5rem;
+
+    }
+    .btn:hover{
+        background-color: $primary-accent-lightest;
+        color: $btn-hover-color;
+    }
+    .navbar-toggler{
+        background-color: $card-header-color;
+    }
+
+}

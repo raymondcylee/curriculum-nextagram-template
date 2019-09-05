@@ -1,8 +1,10 @@
 import re
+import os
 from models.base_model import BaseModel
 import peewee as pw
 from werkzeug.security import generate_password_hash
 from flask_login import UserMixin
+from playhouse.hybrid import hybrid_property
 
 
 class User(BaseModel, UserMixin):
@@ -10,6 +12,26 @@ class User(BaseModel, UserMixin):
     username = pw.CharField(unique=True, null=False)
     email = pw.TextField(unique=True, null=False)
     password = pw.CharField(null=False)
+    profile_picture = pw.CharField(null=True)
+
+    @hybrid_property
+    def all_idols(self):
+        return [idol_rs.idol for idol_rs in self.idols]
+
+    @hybrid_property
+    def all_fans(self):
+        array_of_fans = []
+        for fans_rs in self.fans:
+            fan = fans_rs.fan
+            array_of_fans.append(fan)
+        return array_of_fans
+
+    @hybrid_property
+    def profile_image_url(self):
+        if self.profile_picture:
+            return f'https://{os.environ.get("bucket_name")}.s3.amazonaws.com/' + self.profile_picture
+        else:
+            return "https://www.biiainsurance.com/wp-content/uploads/2015/05/no-image.jpg"
 
     def validate(self):
         if not self.name or not self.username or not self.email or not self.password:
@@ -31,4 +53,3 @@ class User(BaseModel, UserMixin):
             self.errors.append('Invalid Password')
         else:
             self.password = generate_password_hash(self.password)
-

@@ -1,13 +1,24 @@
 import re
 from flask import Blueprint, render_template, url_for, request, redirect, flash, abort
 from models.user import User
+from models.image import Image
 from app import login_manager, S3_BUCKET, s3
 from flask_login import logout_user, login_required, current_user
-
 
 users_blueprint = Blueprint('users',
                             __name__,
                             template_folder='templates')
+
+def upload_file_to_s3( acl="public-read"):
+        s3.upload_fileobj(
+            request.files.get('user_file'),
+            S3_BUCKET,
+            request.files.get('user_file').filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": request.files.get('user_file').content_type
+            }
+        )
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -28,18 +39,20 @@ def create():
     repeatpassword = request.form.get("repeatpassword")
 
     if password != repeatpassword:
-        # flash('Invalid password')
         errors.append("Invalid password")
-        return render_template('users/new.html', username=request.form.get('username'),email=request.form.get('email'), errors=errors)
+        return render_template('users/new.html', username=request.form.get('username'),email=request.form.get('email'))
 
 
     newuser = User(name=name, username=username, email=email, password=password)
     if newuser.save():
-        flash('User created')
+        flash('User created', 'success')
         return render_template('sessions/new.html')
     else:
         errors += newuser.errors
-    return render_template('users/new.html', username=request.form.get('username'),email=request.form.get('email'), errors=errors)
+    
+    for error in errors:
+        flash(error, 'danger')
+    return render_template('users/new.html', username=request.form.get('username'),email=request.form.get('email'))
 
 @users_blueprint.route('/signin', methods=["GET"])
 def sign_in():
@@ -55,14 +68,14 @@ def destroy():
 def show(username):
     user = User.get_or_none(User.username == username)
     if user:
-        return render_template('users/username.html')
+        return render_template('users/username.html', user=user)
     else:
         return abort(404)
 
 
 @users_blueprint.route('/', methods=["GET"])
 def index():
-    return "USERS"
+    return render_template('users/new.html')
 
 
 @users_blueprint.route('/edit', methods=['GET'])
@@ -84,22 +97,43 @@ def update():
         user.username = input_username
 
     if user.save():
-        flash('Info updated')
+        flash('Info updated', 'success')
         return redirect(url_for('users.edit'))
     else:
         errors += user.errors
-    return render_template('users/edit.html', errors=errors)
+
+    for error in errors:
+        flash(error, 'danger')
+    return render_template('users/edit.html')
 
 @users_blueprint.route('/upload', methods=["POST"])
-def upload( acl="public-read"):
+@login_required
+def upload_file():
+    file = request.files.get('user_file')
+    user = User.get_or_none(User.id == current_user.id)
+    try:
+        upload_file_to_s3()
+        uploaded_photos = User.update(profile_picture = file.filename).where(User.id == current_user.id)
+        uploaded_photos.execute()
+        return redirect(url_for("users.show", username=current_user.username))
 
-        s3.upload_fileobj(
-            request.files.get('user_file'),
-            S3_BUCKET,
-            request.files.get('user_file').filename,
-            ExtraArgs={
-                "ACL": acl,
-                "ContentType": request.files.get('user_file').content_type
-            }
-        )
+    except:
+        flash('Please choose a profile picture', 'danger')
+        return redirect(url_for("users.edit"))
+
+@users_blueprint.route('/image', methods=["POST"])
+@login_required
+def upload_image():
+    image = request.files.get('user_file')
+    user = User.get_or_none(User.id == current_user.id)
+    try:
+        upload_file_to_s3()
+        uploaded_images = Image(image=image.filename, user=user)
+        uploaded_images.save()
+        flash('Upload successful', 'success')
+        return redirect(url_for("users.show", username=current_user.username))
+    
+    except:
+        flash('Please choose an image before you upload', 'danger')
+        return redirect(url_for("users.show", username=current_user.username))
 

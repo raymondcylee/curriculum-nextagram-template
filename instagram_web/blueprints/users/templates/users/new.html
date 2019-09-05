@@ -1,46 +1,51 @@
 {% extends '_layout.html' %}
 {% block content %}
 
-<h1>Sign Up</h1>
-
-<form class="form-group" action="{{ url_for('users.create') }}" method="post" novalidate>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <div>
-        <label for="name">Name:</label>
-        <input class="form-control" type="text" name="name" placeholder="Your Nickname">
-        <label for="username">Username:</label>
-        <input class="form-control" type="text" name="username" placeholder="Enter your username">
-        <label for="email">Email:</label>
-        <input class="form-control" type="email" name="email" placeholder="Enter your email">
-
-        <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" placeholder="Your Password">
-
-        <label for="repeatpassword">Repeat Password:</label>
-        <input class="form-control" type="password" name="repeatpassword" placeholder="Repeat Password">
+<div class="signInSignUp">
+  <div class="card w-75 mx-auto" style="margin-top:5rem">
+    <div class="card-header">Sign Up</div>
+    <div class="card-body">
+      <form class="form-group" action="{{ url_for('users.create') }}" method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div>
+          <label for="name">Name:</label>
+          <input class="form-control" type="text" name="name" placeholder="Your Nickname">
+        </div>
+        </br>
+        <div>
+          <label for="username">Username:</label>
+          <input class="form-control" type="text" name="username" placeholder="Enter your username">
+        </div>
+        </br>
+        <div>
+          <label for="email">Email:</label>
+          <input class="form-control" type="email" name="email" placeholder="Enter your email">
+        </div>
+        </br>
+        <div>
+          <label for="password">Password:</label>
+          <input class="form-control" type="password" name="password" placeholder="Your Password">
+        </div>
+        </br>
+        <div>
+          <label for="repeatpassword">Repeat Password:</label>
+          <input class="form-control" type="password" name="repeatpassword" placeholder="Repeat Password">
+        </div>
+        </br>
+        <button class="btn btn-primary" type="submit" value="Add" name="">Submit</button>
+      </form>
     </div>
-    <button class="btn btn-primary" type="submit" value="Add" name="">Submit</button>
-</form>
-
-
-
-
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-success" role="alert">
-    <li>{{ message }}</li>
-    {% endfor %}
-
-    {% endif %}
-    {% endwith %}
-
-    {% for error in errors if errors |length>0 %}
-    <div class="alert alert-danger" role="alert">
-        <li> {{ error }}</li>
-    </div>
-    {% endfor %}
+  </div>
 </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert-{{ category }}">
+  <div>{{ message }}</div>
+</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
 
 {% endblock %}

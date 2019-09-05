@@ -1,0 +1,32 @@
+{% extends '_layout.html' %}
+{% block content %}
+
+<div id="dropin-container"></div>
+<button id="submit-button">Donate</button>
+<form action="{{ url_for('donations.create_donation', id=id) }}" id="this-form" method="post">
+  <input type="hidden" name="csrf_token" value="{{csrf_token() }}" />
+  <input name="this-input" id="hidden-input" type="hidden" />
+  <label>Amount</label>
+  <input name="this-amount" />
+</form>
+
+<script>
+  var myform = document.querySelector("#this-form");
+  var button = document.querySelector("#submit-button");
+  var myinput = document.querySelector("#hidden-input");
+
+
+  braintree.dropin.create({
+    authorization: "{{ client_token }}",
+    container: '#dropin-container'
+  }, function (createErr, instance) {
+    button.addEventListener('click', function () {
+      instance.requestPaymentMethod(function (err, payload) {
+        myinput.value = payload.nounce;
+        myform.submit();
+      });
+    });
+  });
+</script>
+
+{% endblock %}

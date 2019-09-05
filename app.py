@@ -18,7 +18,6 @@ login_manager.init_app(app)
 S3_BUCKET = os.environ.get("bucket_name")
 S3_KEY = os.environ.get("access_key_ID")
 S3_SECRET = os.environ.get("secret_access_key")
-S3_LOCATION = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)
 
 
 if os.getenv('FLASK_ENV') == 'production':
