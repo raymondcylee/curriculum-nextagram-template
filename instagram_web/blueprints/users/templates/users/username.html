@@ -17,6 +17,8 @@
     <div class="profile-picture">
       <a href="/users/{{user.username}}">{{user.username}}</a>
       <img id="profile-picture" src="{{ user.profile_image_url }}" />
+      <div class="counts">Posts: {{ user.images.count() }}</div>
+      <div class="counts"> Followers: {{user.fans.count()}} Following: {{user.idols.count()}}</div>
 
       {% if current_user != user %}
       {% if current_user in user.all_fans %}
@@ -33,7 +35,7 @@
       {% endif %}
 
     </div>
-
+    {% if current_user in user.all_fans or current_user == user %}
     <div class="images">
       {% for image in user.images %}
       <div class="each-form">
@@ -47,6 +49,7 @@
       </div>
       {% endfor %}
     </div>
+    {% endif %}
   </div>
 
   {% if current_user.id == user.id %}

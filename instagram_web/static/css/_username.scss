@@ -26,6 +26,10 @@
         border-radius: 50%;
         margin-bottom: 2rem;
         }
+
+        .counts{
+            margin: 5px 0 5px 0;
+        }
     }
     .images{
         flex: 3;
@@ -45,12 +49,10 @@
         align-items: center;
         
 
-        .button{
-            max-width: 100px;
-            margin-top: 10px;
-            margin-bottom: 10px;
+        
+
             
-        }
+        
 
     }
 
@@ -74,6 +76,9 @@
     }
 
     .btn{
+        max-width: 100px;
+        margin-top: 10px;
+        margin-bottom: 10px;
         background-color:$btn-color;
         color: $primary-accent;
         border: 1px solid $primary-accent;
