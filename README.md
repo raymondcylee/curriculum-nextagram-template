@@ -1,4 +1,4 @@
-# Flask Nextagram Template
+# Flask Template
 
 version 0.0.1 (alpha)
 
